@@ -8,4 +8,5 @@ type ProductRepository interface {
 	GetAll() ([]entity.Product, error)
 	GetById(id uint) (entity.Product, error)
 	Edit(string, entity.Product) (entity.Product, error)
+	Delete(id string) error
 }

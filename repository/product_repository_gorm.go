@@ -51,3 +51,8 @@ func (repo productRepositoryGorm) Edit(id string, newProduct entity.Product) (pr
 	repo.DB.Save(&product)
 	return product, err
 }
+
+func (repo productRepositoryGorm) Delete(id string) error {
+	var product entity.Product
+	return repo.DB.Delete(&product, id).Error
+}

@@ -55,6 +55,7 @@ func CreateServer() *gin.Engine {
 	productRoute.GET("/", productController.GetAllProduct)
 	productRoute.GET("/:product_id", productController.GetByIdProduct)
 	productRoute.PUT("/:product_id", productController.PutProduct)
+	productRoute.DELETE("/:product_id", productController.DeleteProduct)
 
 	return server
 }

@@ -18,6 +18,7 @@ type ProductController interface {
 	GetAllProduct(*gin.Context)
 	GetByIdProduct(*gin.Context)
 	PutProduct(*gin.Context)
+	DeleteProduct(*gin.Context)
 }
 
 func NewProductController(service service.ProductService) ProductController {
@@ -100,4 +101,17 @@ func (controlelr productController) PutProduct(ctx *gin.Context) {
 		"product": product,
 	})
 
+}
+
+func (controller productController) DeleteProduct(ctx *gin.Context) {
+	id := ctx.Param("product_id")
+	if err := controller.productService.Delete(id); err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{
+			"message": err.Error(),
+		})
+		return
+	}
+	ctx.JSON(http.StatusOK, gin.H{
+		"message": "Product successfully Delete",
+	})
 }
