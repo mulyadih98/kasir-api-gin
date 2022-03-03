@@ -56,5 +56,5 @@ func (token tokenJwt) Decode(tokenString string) (interface{}, error) {
 	if !decode.Valid {
 		return nil, errors.New("token tidak valid")
 	}
-	return claims, nil
+	return claims.ID, nil
 }
