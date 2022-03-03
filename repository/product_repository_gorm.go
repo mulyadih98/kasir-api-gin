@@ -29,3 +29,8 @@ func (repo productRepositoryGorm) GetAll() (products []entity.Product, err error
 	err = repo.DB.Find(&products).Error
 	return products, err
 }
+
+func (repo productRepositoryGorm) GetById(id uint) (product entity.Product, err error) {
+	err = repo.DB.First(&product, id).Error
+	return product, err
+}
