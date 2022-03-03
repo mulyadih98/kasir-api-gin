@@ -37,3 +37,7 @@ func (repo productService) GetAll() ([]entity.Product, error) {
 func (repo productService) GetById(id uint) (entity.Product, error) {
 	return repo.productRepository.GetById(id)
 }
+
+func (repo productService) Edir(id string, product entity.Product) (entity.Product, error) {
+	return repo.productRepository.Edit(id, product)
+}
