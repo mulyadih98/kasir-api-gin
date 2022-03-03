@@ -16,6 +16,10 @@ func NewProductRepositoryGorm(db *gorm.DB) ProductRepository {
 	}
 }
 
+func (repo productRepositoryGorm) Migrate() error {
+	return repo.DB.AutoMigrate(&entity.Product{})
+}
+
 func (repo productRepositoryGorm) Save(product entity.Product) (uint, error) {
 	err := repo.DB.Create(&product).Error
 	return product.ID, err
