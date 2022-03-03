@@ -13,6 +13,7 @@ type productService struct {
 type ProductService interface {
 	Save(entity.Product) (uint, error)
 	GetAll() ([]entity.Product, error)
+	GetById(uint) (entity.Product, error)
 }
 
 func NewProductService(productRepo repository.ProductRepository) ProductService {
@@ -31,4 +32,8 @@ func (repo productService) Save(product entity.Product) (uint, error) {
 
 func (repo productService) GetAll() ([]entity.Product, error) {
 	return repo.productRepository.GetAll()
+}
+
+func (repo productService) GetById(id uint) (entity.Product, error) {
+	return repo.productRepository.GetById(id)
 }
