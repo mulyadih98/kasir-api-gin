@@ -28,6 +28,7 @@ func (controller productController) PostProduct(ctx *gin.Context) {
 		ctx.JSON(http.StatusBadRequest, gin.H{
 			"message": err.Error(),
 		})
+		return
 	}
 
 	product, err := controller.productService.Save(inputProduct)
@@ -35,10 +36,24 @@ func (controller productController) PostProduct(ctx *gin.Context) {
 		ctx.JSON(http.StatusBadRequest, gin.H{
 			"message": err.Error(),
 		})
+		return
 	}
 
 	ctx.JSON(http.StatusCreated, gin.H{
 		"message": "Product Successfully added",
 		"product": product,
+	})
+}
+
+func (controller productController) GetAllProduct(ctx *gin.Context) {
+	products, err := controller.productService.GetAll()
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{
+			"message": err.Error(),
+		})
+		return
+	}
+	ctx.JSON(http.StatusCreated, gin.H{
+		"product": products,
 	})
 }
