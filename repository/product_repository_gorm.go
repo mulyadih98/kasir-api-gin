@@ -24,3 +24,8 @@ func (repo productRepositoryGorm) Save(product entity.Product) (uint, error) {
 	err := repo.DB.Create(&product).Error
 	return product.ID, err
 }
+
+func (repo productRepositoryGorm) GetAll() (products []entity.Product, err error) {
+	err = repo.DB.Find(&products).Error
+	return products, err
+}
