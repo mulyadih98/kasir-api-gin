@@ -22,18 +22,19 @@ func CreateServer() *gin.Engine {
 	//helper
 	hash := helper.NewPasswordHash()
 	token := helper.NewTokenJWT()
+
 	// repository
 	userRepository := repository.NewUserRepository(db)
-
-	// migrate database
-	if err := userRepository.Migrate(); err != nil {
-		log.Panic(err.Error())
-	}
+	productRepository := repository.NewProductRepositoryGorm(db)
 
 	// service
 	authService := service.NewAuthService(userRepository, hash, token)
+	productService := service.NewProductService(productRepository)
+
 	// controller
 	authController := controller.NewAuthController(authService)
+	productController := controller.NewProductController(productService)
+
 	server.GET("/", func(c *gin.Context) {
 		c.JSON(200, gin.H{
 			"message": "Welcome to Kasir App With gin framework",
@@ -50,6 +51,7 @@ func CreateServer() *gin.Engine {
 	authRoute.Use(middleware.AuthJwt())
 	// route for product
 	productRoute := authRoute.Group("/products")
+	productRoute.POST("/", productController.PostProduct)
 
 	return server
 }
