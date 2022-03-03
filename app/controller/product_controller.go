@@ -4,6 +4,7 @@ import (
 	"kasir-api-gin/domains/entity"
 	"kasir-api-gin/service"
 	"net/http"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
@@ -56,5 +57,21 @@ func (controller productController) GetAllProduct(ctx *gin.Context) {
 	}
 	ctx.JSON(http.StatusCreated, gin.H{
 		"product": products,
+	})
+}
+
+func (controller productController) GetByIdProduct(ctx *gin.Context) {
+	stringId := ctx.Param("product_id")
+	// var id uint
+	id, _ := strconv.ParseUint(stringId, 10, 32)
+	product, err := controller.productService.GetById(uint(id))
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{
+			"message": err.Error(),
+		})
+		return
+	}
+	ctx.JSON(http.StatusCreated, gin.H{
+		"product": product,
 	})
 }
