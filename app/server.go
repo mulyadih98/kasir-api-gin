@@ -39,20 +39,17 @@ func CreateServer() *gin.Engine {
 			"message": "Welcome to Kasir App With gin framework",
 		})
 	})
-
+	// public route
 	public := server.Group("/api/v1")
-
+	// auth route
 	auth := public.Group("/auth")
 	auth.POST("/register", authController.Register)
 	auth.POST("/login", authController.Login)
-	authApi := public.Group("/Profile")
-	authApi.Use(middleware.AuthJwt())
-	authApi.GET("/", func(c *gin.Context) {
-		id, _ := c.Get("user_id")
-		c.JSON(200, gin.H{
-			"id": id,
-		})
-	})
+	// safe route for user authenticated
+	authRoute := server.Group("/api/v1")
+	authRoute.Use(middleware.AuthJwt())
+	// route for product
+	productRoute := authRoute.Group("/products")
 
 	return server
 }
