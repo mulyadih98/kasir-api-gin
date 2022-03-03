@@ -16,6 +16,7 @@ type productController struct {
 type ProductController interface {
 	PostProduct(*gin.Context)
 	GetAllProduct(*gin.Context)
+	GetByIdProduct(*gin.Context)
 }
 
 func NewProductController(service service.ProductService) ProductController {
