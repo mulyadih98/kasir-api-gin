@@ -3,6 +3,7 @@ package service
 import (
 	"kasir-api-gin/domains/entity"
 	"kasir-api-gin/repository"
+	"log"
 )
 
 type productService struct {
@@ -14,7 +15,9 @@ type ProductService interface {
 }
 
 func NewProductService(productRepo repository.ProductRepository) ProductService {
-	productRepo.Migrate()
+	if err := productRepo.Migrate(); err != nil {
+		log.Panic(err.Error())
+	}
 	return productService{
 		productRepository: productRepo,
 	}

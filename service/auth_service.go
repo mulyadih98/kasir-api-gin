@@ -5,6 +5,7 @@ import (
 	"kasir-api-gin/domains/entity"
 	"kasir-api-gin/helper"
 	"kasir-api-gin/repository"
+	"log"
 )
 
 type authService struct {
@@ -19,6 +20,9 @@ type AuthService interface {
 }
 
 func NewAuthService(userRepo repository.UserRepository, hash helper.PasswordHash, token helper.TokenJWT) AuthService {
+	if err := userRepo.Migrate(); err != nil {
+		log.Panic(err.Error())
+	}
 	return authService{
 		userRepository: userRepo,
 		passwordHash:   hash,
