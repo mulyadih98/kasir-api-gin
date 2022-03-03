@@ -56,7 +56,7 @@ func (controller productController) GetAllProduct(ctx *gin.Context) {
 		})
 		return
 	}
-	ctx.JSON(http.StatusCreated, gin.H{
+	ctx.JSON(http.StatusOK, gin.H{
 		"product": products,
 	})
 }
@@ -72,7 +72,31 @@ func (controller productController) GetByIdProduct(ctx *gin.Context) {
 		})
 		return
 	}
-	ctx.JSON(http.StatusCreated, gin.H{
+	ctx.JSON(http.StatusOK, gin.H{
 		"product": product,
 	})
+}
+
+func (controlelr productController) PutProduct(ctx *gin.Context) {
+	id := ctx.Param("product_id")
+	var inputProduct entity.Product
+	if err := ctx.ShouldBind(&inputProduct); err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{
+			"message": err.Error(),
+		})
+		return
+	}
+
+	product, err := controlelr.productService.Edit(id, inputProduct)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{
+			"message": err.Error(),
+		})
+		return
+	}
+	ctx.JSON(http.StatusOK, gin.H{
+		"message": "Product successfully Edit",
+		"product": product,
+	})
+
 }

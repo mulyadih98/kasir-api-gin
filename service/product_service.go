@@ -14,6 +14,7 @@ type ProductService interface {
 	Save(entity.Product) (uint, error)
 	GetAll() ([]entity.Product, error)
 	GetById(uint) (entity.Product, error)
+	Edit(string, entity.Product) (entity.Product, error)
 }
 
 func NewProductService(productRepo repository.ProductRepository) ProductService {
@@ -38,6 +39,6 @@ func (repo productService) GetById(id uint) (entity.Product, error) {
 	return repo.productRepository.GetById(id)
 }
 
-func (repo productService) Edir(id string, product entity.Product) (entity.Product, error) {
+func (repo productService) Edit(id string, product entity.Product) (entity.Product, error) {
 	return repo.productRepository.Edit(id, product)
 }
