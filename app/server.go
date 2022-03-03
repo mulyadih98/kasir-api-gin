@@ -54,6 +54,7 @@ func CreateServer() *gin.Engine {
 	productRoute.POST("/", productController.PostProduct)
 	productRoute.GET("/", productController.GetAllProduct)
 	productRoute.GET("/:product_id", productController.GetByIdProduct)
+	productRoute.PUT("/:product_id", productController.PutProduct)
 
 	return server
 }

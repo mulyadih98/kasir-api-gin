@@ -17,6 +17,7 @@ type ProductController interface {
 	PostProduct(*gin.Context)
 	GetAllProduct(*gin.Context)
 	GetByIdProduct(*gin.Context)
+	PutProduct(*gin.Context)
 }
 
 func NewProductController(service service.ProductService) ProductController {
