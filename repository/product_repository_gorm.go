@@ -34,3 +34,20 @@ func (repo productRepositoryGorm) GetById(id uint) (product entity.Product, err 
 	err = repo.DB.First(&product, id).Error
 	return product, err
 }
+
+func (repo productRepositoryGorm) Edit(id string, newProduct entity.Product) (product entity.Product, err error) {
+	repo.DB.First(&product, id)
+	if newProduct.Name != "" {
+		product.Name = newProduct.Name
+	}
+
+	if newProduct.Description != "" {
+		product.Description = newProduct.Description
+	}
+
+	if newProduct.Price != 0 {
+		product.Price = newProduct.Price
+	}
+	repo.DB.Save(&product)
+	return product, err
+}

@@ -7,4 +7,5 @@ type ProductRepository interface {
 	Save(entity.Product) (uint, error)
 	GetAll() ([]entity.Product, error)
 	GetById(id uint) (entity.Product, error)
+	Edit(string, entity.Product) (entity.Product, error)
 }
