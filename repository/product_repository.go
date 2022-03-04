@@ -9,4 +9,5 @@ type ProductRepository interface {
 	GetById(id uint) (entity.Product, error)
 	Edit(string, entity.Product) (entity.Product, error)
 	Delete(id string) error
+	ReduceStock(id string, qty int) error
 }

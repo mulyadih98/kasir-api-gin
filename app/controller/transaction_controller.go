@@ -27,12 +27,8 @@ func (controller transactionController) PostTransaction(ctx *gin.Context) {
 	}
 
 	user_id, _ := ctx.Get("user_id")
-	transaction, err := controller.service.Save(entity.Transaction{
-		Amount: inputTransaction.Amount,
-		Change: inputTransaction.Change,
-		UserID: user_id.(uint),
-	})
-
+	inputTransaction.UserID = user_id.(uint)
+	transaction, err := controller.service.Save(inputTransaction)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{
 			"message": err.Error(),

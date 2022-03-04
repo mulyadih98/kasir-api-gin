@@ -56,3 +56,10 @@ func (repo productRepositoryGorm) Delete(id string) error {
 	var product entity.Product
 	return repo.DB.Delete(&product, id).Error
 }
+
+func (repo productRepositoryGorm) ReduceStock(id string, qty int) error {
+	var product entity.Product
+	repo.DB.First(&product, id)
+	product.Stock = product.Stock - qty
+	return repo.DB.Save(&product).Error
+}

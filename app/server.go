@@ -31,7 +31,7 @@ func CreateServer() *gin.Engine {
 	// service
 	authService := service.NewAuthService(userRepository, hash, token)
 	productService := service.NewProductService(productRepository)
-	transactionService := service.NewTransactionService(transactionRepository)
+	transactionService := service.NewTransactionService(transactionRepository, productRepository)
 
 	// controller
 	authController := controller.NewAuthController(authService)
@@ -63,7 +63,7 @@ func CreateServer() *gin.Engine {
 	productRoute.PUT("/:product_id", productController.PutProduct)
 	productRoute.DELETE("/:product_id", productController.DeleteProduct)
 
-	// route for service
+	// route for transaction
 	transactionRoute := authRoute.Group("/transactions")
 	transactionRoute.POST("/", transactionController.PostTransaction)
 
