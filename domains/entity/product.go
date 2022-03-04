@@ -7,5 +7,5 @@ type Product struct {
 	Name        string `json:"name" form:"name" binding:"required"`
 	Price       int    `json:"price" form:"price" binding:"required"`
 	Stock       int    `json:"stock" form:"stock" binding:"required" gorm:"not null; default:0"`
-	Description string `json:"description" form:"stock" `
+	Description string `json:"description" form:"description" `
 }

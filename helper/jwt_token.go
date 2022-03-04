@@ -3,6 +3,7 @@ package helper
 import (
 	"errors"
 	"os"
+	"strconv"
 	"time"
 
 	"github.com/golang-jwt/jwt"
@@ -27,7 +28,8 @@ func NewTokenJWT() TokenJWT {
 }
 
 func (tn tokenJwt) Generate(id uint) (string, error) {
-	expirationTime := time.Now().Add(5 * time.Minute)
+	expired, _ := strconv.ParseInt(os.Getenv("TOKEN_EXPIRATION"), 10, 32)
+	expirationTime := time.Now().Add(time.Duration(expired) * time.Minute)
 	claims := myCustomClaims{
 		ID: id,
 		StandardClaims: jwt.StandardClaims{
