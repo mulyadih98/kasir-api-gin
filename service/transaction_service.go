@@ -13,6 +13,7 @@ type transactionService struct {
 
 type TransactionService interface {
 	Save(entity.Transaction) (interface{}, error)
+	GetById(string) (interface{}, error)
 }
 
 func NewTransactionService(transactionRepo repository.TransactionRepository, product repository.ProductRepository) TransactionService {
@@ -37,4 +38,8 @@ func (service transactionService) Save(transaction entity.Transaction) (interfac
 	}
 
 	return transaction.SavedTransaction(), nil
+}
+
+func (service transactionService) GetById(id string) (interface{}, error) {
+	return service.transactionRepository.GetById(id)
 }

@@ -27,9 +27,10 @@ func CreateServer() *gin.Engine {
 	userRepository := repository.NewUserRepository(db)
 	productRepository := repository.NewProductRepositoryGorm(db)
 	transactionRepository := repository.NewTransactionRepositoryGorm(db)
+	authRepository := repository.NewAuthRepositoryGorm(db)
 
 	// service
-	authService := service.NewAuthService(userRepository, hash, token)
+	authService := service.NewAuthService(userRepository, hash, token, authRepository)
 	productService := service.NewProductService(productRepository)
 	transactionService := service.NewTransactionService(transactionRepository, productRepository)
 
@@ -50,6 +51,8 @@ func CreateServer() *gin.Engine {
 	auth := public.Group("/auth")
 	auth.POST("/register", authController.Register)
 	auth.POST("/login", authController.Login)
+	auth.POST("/refresh", authController.Refresh)
+	auth.POST("/logout", middleware.AuthJwt(), authController.Logout)
 
 	// safe route for user authenticated
 	authRoute := server.Group("/api/v1")
@@ -66,6 +69,7 @@ func CreateServer() *gin.Engine {
 	// route for transaction
 	transactionRoute := authRoute.Group("/transactions")
 	transactionRoute.POST("/", transactionController.PostTransaction)
+	transactionRoute.GET("/:transaction_id", transactionController.GetTransaction)
 
 	return server
 }

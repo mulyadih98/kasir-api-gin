@@ -6,9 +6,11 @@ import (
 	"kasir-api-gin/helper"
 	"kasir-api-gin/repository"
 	"log"
+	"strconv"
 )
 
 type authService struct {
+	authRepository repository.AuthRepository
 	userRepository repository.UserRepository
 	passwordHash   helper.PasswordHash
 	tokenize       helper.TokenJWT
@@ -16,17 +18,27 @@ type authService struct {
 
 type AuthService interface {
 	Register(entity.User) (uint, error)
-	Login(entity.LoginInput) (string, error)
+	Login(entity.LoginInput) (entity.Auth, error)
+	Refresh(string) (string, error)
+	Logout(string) error
 }
 
-func NewAuthService(userRepo repository.UserRepository, hash helper.PasswordHash, token helper.TokenJWT) AuthService {
+func NewAuthService(userRepo repository.UserRepository,
+	hash helper.PasswordHash,
+	token helper.TokenJWT,
+	auth repository.AuthRepository,
+) AuthService {
 	if err := userRepo.Migrate(); err != nil {
+		log.Panic(err.Error())
+	}
+	if err := auth.Migrate(); err != nil {
 		log.Panic(err.Error())
 	}
 	return authService{
 		userRepository: userRepo,
 		passwordHash:   hash,
 		tokenize:       token,
+		authRepository: auth,
 	}
 }
 
@@ -53,16 +65,37 @@ func (service authService) Register(user entity.User) (uint, error) {
 	return id, err
 }
 
-func (service authService) Login(input entity.LoginInput) (token string, err error) {
+func (service authService) Login(input entity.LoginInput) (token entity.Auth, err error) {
 	userLogin, err := service.userRepository.GetByEmail(input.Email)
 	if err != nil {
-		return "", errors.New("email tidak terdaftar")
+		return token, errors.New("email tidak terdaftar")
 	}
 
 	if err := service.passwordHash.Compare(userLogin.Password, input.Password); err != nil {
-		return "", errors.New("password salah")
+		return token, errors.New("password salah")
 	}
-	token, err = service.tokenize.Generate(userLogin.ID)
 
+	var tokenString string
+	tokenString, _ = service.tokenize.Generate(userLogin.ID)
+	refresToken, _ := service.tokenize.GenerateRefresh(userLogin.ID)
+	service.authRepository.Save(entity.AuthToken{RefreshToken: refresToken, UserID: userLogin.ID})
+	token = entity.Auth{
+		Token:        tokenString,
+		RefreshToken: refresToken,
+	}
 	return token, err
+}
+
+func (service authService) Refresh(refreshToken string) (string, error) {
+	id, err := service.authRepository.GetByToken(refreshToken)
+	if err != nil {
+		return "", err
+	}
+	userId, _ := strconv.ParseUint(id, 10, 32)
+	return service.tokenize.Generate(uint(userId))
+}
+
+func (service authService) Logout(user_id string) error {
+	err := service.authRepository.Delete(user_id)
+	return err
 }

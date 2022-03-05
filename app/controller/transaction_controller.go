@@ -40,3 +40,17 @@ func (controller transactionController) PostTransaction(ctx *gin.Context) {
 		"transaction": transaction,
 	})
 }
+
+func (controller transactionController) GetTransaction(ctx *gin.Context) {
+	stringId := ctx.Param("transaction_id")
+	transaction, err := controller.service.GetById(stringId)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{
+			"message": err.Error(),
+		})
+	}
+
+	ctx.JSON(http.StatusOK, gin.H{
+		"transaction": transaction,
+	})
+}

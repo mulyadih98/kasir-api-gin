@@ -24,3 +24,7 @@ func (repo transactionRepositoryGorm) Save(transaction entity.Transaction) (enti
 	err := repo.DB.Create(&transaction).Error
 	return transaction, err
 }
+func (repo transactionRepositoryGorm) GetById(id string) (transaction entity.Transaction, err error) {
+	err = repo.DB.Where("id = ?", id).Preload("TransactionDetail.Product").Preload("TransactionDetail").Find(&transaction).Error
+	return transaction, err
+}
